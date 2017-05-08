@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="InfoList:war">
+    <output-path>$PROJECT_DIR$/../InfoList/target</output-path>
+    <root id="archive" name="InfoList-1.0.war">
+      <element id="artifact" artifact-name="InfoList:war exploded" />
+    </root>
+  </artifact>
+</component>
