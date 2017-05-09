@@ -18,6 +18,7 @@ public class DotaMatchInfoList {
     private static final String RESULT = "result";
     private static final String HEROES = "heroes";
     private static final String LEAGUES = "leagues";
+    private static final String ITEMS = "items";
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
     private static final String CONN_URL = "jdbc:mysql://localhost:3306/dota_info";
@@ -67,7 +68,7 @@ public class DotaMatchInfoList {
     public static void main(String args[]) {
         //英雄列表url：http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1?key=7F96F168DE0894F95BCD94C2BE3D5D87&language=zh_cn
         //联赛比赛列表url：http://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/v1?key=7F96F168DE0894F95BCD94C2BE3D5D87&language=zh_cn
-        DotaMatchInfoList dota = new DotaMatchInfoList("http://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/v1?key=7F96F168DE0894F95BCD94C2BE3D5D87&language=zh_cn");
+        DotaMatchInfoList dota = new DotaMatchInfoList("https://api.steampowered.com/IEconDOTA2_570/GetGameItems/v0001/?key=7F96F168DE0894F95BCD94C2BE3D5D87&language=zh_cn");
         dota.insert();
     }
 
@@ -76,32 +77,24 @@ public class DotaMatchInfoList {
         JSONObject object = JSONObject.fromObject(str);
         JSONObject obInside = (JSONObject) object.get(RESULT);
         //json部分get的string
-        jsonArray = (JSONArray) obInside.get(LEAGUES);
+        jsonArray = (JSONArray) obInside.get(ITEMS);
     }
 
     private void insert() {
         try {
             Connection conn = this.getConnection();
-            //Statement st = conn.createStatement();
             PreparedStatement preparedStatement = null;
-            LeagueListing listing = new LeagueListing();
-            preparedStatement = conn.prepareStatement(listing.linkStr());
+            //LeagueListing listing = new LeagueListing();
+            GameItem item = new GameItem();
+            preparedStatement = conn.prepareStatement(item.linkStr());
             for (int i = 0; i < jsonArray.size(); i++) {
-                //Hero hero = new Hero(jsonArray.getJSONObject(i));
-                //String insertStr = hero.linkStr();
-                //st.addBatch(insertStr);
-                LeagueListing leagueListing = new LeagueListing(jsonArray.getJSONObject(i));
-                //preparedStatement = conn.prepareStatement(leagueListing.linkStr());
-                for (int j = 0; j < leagueListing.fields(); j++) {
-                    preparedStatement.setString(j + 1, leagueListing.get(j));
+                GameItem gameItem = new GameItem(jsonArray.getJSONObject(i));
+                for (int j = 0; j < gameItem.fields(); j++) {
+                    preparedStatement.setString(j + 1, gameItem.get(j));
                 }
                 preparedStatement.addBatch();
-                //String insertStr = leagueListing.linkStr();
-                //st.addBatch(insertStr);
             }
             preparedStatement.executeBatch();
-            //st.executeBatch();
-            //st.close();
             preparedStatement.close();
             conn.close();
         } catch (SQLException e) {

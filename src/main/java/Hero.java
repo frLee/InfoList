@@ -1,6 +1,6 @@
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import java.sql.PreparedStatement;
 
 /**
  * Created by kk on 2017/5/4.
@@ -19,6 +19,8 @@ public class Hero extends Type{
     private int id;
 
     private String localized_name;
+
+    private JSONArray jsonArray = new JSONArray();
 
     public String getName() {
         return name;
@@ -48,7 +50,15 @@ public class Hero extends Type{
     }
 
     public Hero(JSONObject jsonObject) {
-        super();
+        super(jsonObject);
+        jsonArray.add(1, this.getId());
+        jsonArray.add(2, this.getName());
+        jsonArray.add(3, this.getLocalized_name());
+    }
+
+    @Override
+    public void init(JSONObject jsonObject) {
+        super.init(jsonObject);
         Object ob_id = jsonObject.get(ID);
         Object ob_name = jsonObject.get(NAME);
         Object ob_localized_name = jsonObject.get(LOCALIZED_NAME);
@@ -58,22 +68,13 @@ public class Hero extends Type{
     }
 
     @Override
-    public void init(JSONObject jsonObject) {
-        super.init(jsonObject);
-    }
-
-    @Override
     public int fields() {
         return LISTCOUNT;
     }
 
     @Override
     public String linkStr() {
-        String insert = "INSERT INTO " + TABLENAME;
-        insert += " VALUES(";
-        insert += "'" + this.getName() + "'" + ", ";
-        insert += "'" + this.getId() + "'" +", ";
-        insert += "'" + this.getLocalized_name() + "'" + ")";
-        return insert;
+        super.setTableName(TABLENAME);
+        return super.linkStr();
     }
 }

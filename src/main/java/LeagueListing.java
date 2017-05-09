@@ -105,14 +105,8 @@ public class LeagueListing extends Type{
 
     @Override
     public String linkStr() {
-        String insert = "INSERT INTO " + TABLENAME;
-        insert += " VALUES(";
-        for (int i = 0; i < fields(); i++) {
-            insert += "?,";
-        }
-        insert = insert.substring(0, insert.length() - 1);
-        insert += ")";
-        return insert;
+        super.setTableName(TABLENAME);
+        return super.linkStr();
     }
 
     public String get(int index) {
